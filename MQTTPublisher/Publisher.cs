@@ -1,6 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using MQTTnet;
 using MQTTnet.Client;
+using MQTTnet.Client.Options;
 using System;
 
 namespace MQTTPublisher {
@@ -15,11 +16,20 @@ namespace MQTTPublisher {
                 .WithCleanSession()
                 .Build();
 
-            
+            client.UseConnectedHandler(e =>
+            {
+                Console.WriteLine("Connnected to broker successfullly");
+            });
 
-           await client.ConnectAsync(options);
 
-            Console.WriteLine("Pree any key to oublish a message...");
+            client.UseDisconnectedHandler(e =>
+            {
+                Console.WriteLine("Disconnnected to broker successfullly");
+            });
+
+            await client.ConnectAsync(options);
+
+            Console.WriteLine("Pree any key to publish a message...");
             Console.ReadLine();
 
             await publishMessageAsyncClient(client);
